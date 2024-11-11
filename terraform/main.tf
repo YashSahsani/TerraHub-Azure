@@ -110,11 +110,11 @@ resource "azurerm_linux_virtual_machine" "mtc-lvm" {
   admin_username        = "yashadmin"
   network_interface_ids = [azurerm_network_interface.mtc-nic.id]
 
-  custom_data = filebase64("install-docker.tpl")
+  custom_data = filebase64("../templates/install-docker.tpl")
 
   admin_ssh_key {
     username   = "yashadmin"
-    public_key = file("~/.ssh/xxx.pub")  ## TODO change this path 
+    public_key = file("~/.ssh/xxx.pub") ## TODO change this path 
   }
   os_disk {
     caching              = "ReadWrite"
@@ -128,10 +128,10 @@ resource "azurerm_linux_virtual_machine" "mtc-lvm" {
   }
 
   provisioner "local-exec" {
-    command = templatefile("${var.host_os}-Create-Ssh-Config-Script.tpl", {
+    command = templatefile("../templates/${var.host_os}-Create-Ssh-Config-Script.tpl", {
       hostname     = self.public_ip_address
       user         = "yashadmin"
-      identityFile = "~/.ssh/xxx"
+      identityFile = "~/.ssh/xxx" ## TODO change this path
     })
 
     interpreter = var.host_os == "linux" ? ["/bin/bash", "-c"] : ["powershell.exe", "-Command"]
